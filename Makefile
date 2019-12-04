@@ -1,7 +1,7 @@
 # Setup our targets first.
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	source
+SOURCES		:=	source source/configs
 INCLUDES	:=	include
 
 # Setup our compiler options next.
@@ -10,7 +10,7 @@ AS=ca65
 LD=ld65
 CFLAGS=-O -t nes -I ../$(INCLUDES)
 ASFLAGS=-t nes -I ../$(INCLUDES)
-LDFLAGS=nes.lib
+LDFLAGS=
 
 #############################################################################################
 # Check if we are on the build step.
@@ -49,8 +49,10 @@ else
 # Actual binary output.
 $(OUTPUT).nes: $(OFILES)
 ifeq (,$(wildcard $(LINKER_FILE)))
-	$(LD) -t nes -o $@ *.o $(LDFLAGS)
+	@echo Using default configuration options...
+	$(LD) -t nes -o $@ *.o nes.lib $(LDFLAGS)
 else
+	@echo Using linker file $(LINKER_FILE)...
 	$(LD) -C $(LINKER_FILE) -o $@ *.o $(LDFLAGS)
 endif
 
